@@ -1,0 +1,276 @@
+#include <stdio.h>
+#include <stdlib.h>
+int count;
+typedef struct node
+{
+    int data;
+    struct node *llink;
+    struct node *rlink;
+} NODE;
+
+NODE *getNode(int key)
+{
+    NODE *n = (NODE *)malloc(sizeof(NODE));
+    n->data = key;
+    n->llink = NULL;
+    n->rlink = NULL;
+    return n;
+}
+
+NODE *insertNode(NODE *root)
+{
+    int key;
+    printf("\nEnter the element to be inserted: ");
+    scanf("%d", &key);
+    NODE *n = getNode(key);
+    if (root == NULL)
+        return n;
+    NODE *cur = root;
+    NODE *prev = NULL;
+    while (cur != NULL)
+    {
+        if (cur->data > key)
+        {
+            prev = cur;
+            cur = cur->llink;
+        }
+        else
+        {
+            prev = cur;
+            cur = cur->rlink;
+        }
+    }
+    if (prev->data > key)
+    {
+        prev->llink = n;
+    }
+    else
+        prev->rlink = n;
+    return root;
+}
+
+void inOrdered(NODE *root)
+{
+    if (root == NULL)
+        return;
+    inOrdered(root->llink);
+    printf("%d ", root->data);
+    inOrdered(root->rlink);
+}
+
+void preOrdered(NODE *root)
+{
+    if (root == NULL)
+        return;
+    printf("%d ", root->data);
+    preOrdered(root->llink);
+    preOrdered(root->rlink);
+}
+
+void postOrdered(NODE *root)
+{
+    if (root == NULL)
+        return;
+    postOrdered(root->llink);
+    postOrdered(root->rlink);
+    printf("%d ", root->data);
+}
+
+void searchByKey(NODE *root)
+{
+    int key;
+    printf("\nEnter the key element to be searched: ");
+    scanf("%d", &key);
+    if (root == NULL)
+    {
+        printf("\nTree is empty");
+        return;
+    }
+    NODE *cur = root;
+    NODE *prev = NULL;
+    while (cur != NULL)
+    {
+        if (cur->data == key)
+        {
+            if (prev == NULL)
+            {
+                printf("\nKey found!! It is the root node");
+                return;
+            }
+            else
+            {
+                printf("\nKey found!! Parent node: %d", prev->data);
+                return;
+            }
+        }
+        prev = cur;
+        if (cur->data > key)
+        {
+
+            cur = cur->llink;
+        }
+        else
+        {
+            cur = cur->rlink;
+        }
+    }
+    printf("\nKey not found!!");
+}
+
+int height(NODE *root)
+{
+    if (root == NULL)
+        return -1;
+    int leftHeight = height(root->llink);
+    int rightHeight = height(root->rlink);
+    return (leftHeight > rightHeight) ? leftHeight + 1 : rightHeight + 1;
+}
+
+void countNode(NODE *root)
+{
+    if (root == NULL)
+        return;
+    countNode(root->llink);
+    count++;
+    countNode(root->rlink);
+}
+
+void maxNode(NODE *root)
+{
+    if (root == NULL)
+    {
+        printf("\nTree is empty");
+        return;
+    }
+    NODE *cur = root;
+    NODE *prev = NULL;
+    while (cur->rlink != NULL)
+    {
+        prev = cur;
+        cur = cur->rlink;
+    }
+    if (prev == NULL)
+    {
+        printf("\nMax node: %d\nIt is the root node", cur->data);
+        return;
+    }
+    else
+    {
+        printf("\nMax node: %d\nParent node: %d", cur->data, prev->data);
+        return;
+    }
+}
+
+NODE *deleteNode(NODE *root, int key)
+{
+    if (root == NULL)
+        return root;
+    if (root->data > key)
+        root->llink = deleteNode(root->llink, key);
+    else if (root->data < key)
+        root->rlink = deleteNode(root->rlink, key);
+    else
+    {
+        if (root->llink == NULL)
+        {
+            NODE *temp = root->rlink;
+            free(root);
+            return temp;
+        }
+        else if (root->rlink == NULL)
+        {
+            NODE *temp = root->llink;
+            free(root);
+            return temp;
+        }
+
+        NODE *temp = root->rlink;
+        while (temp->llink != NULL)
+        {
+            temp = temp->llink;
+        }
+        root->data = temp->data;
+        root->rlink = deleteNode(root->rlink, temp->data);
+    }
+    return root;
+}
+void searchAndDelete(NODE *root)
+{
+    int key;
+    printf("\nEnter the key element to be deleted: ");
+    scanf("%d", &key);
+    if (root == NULL)
+    {
+        printf("\nTree is empty!!");
+        return;
+    }
+    NODE *cur = root;
+    while (cur != NULL)
+    {
+        if (cur->data == key)
+        {
+            printf("\nKey deleted: %d", cur->data);
+            root = deleteNode(root, key);
+            printf("\nIn ordered list after deletion: ");
+            inOrdered(root);
+            count--;
+            return;
+        }
+        if (cur->data > key)
+            cur = cur->llink;
+        else
+            cur = cur->rlink;
+    }
+    printf("\nKey not found!!!");
+}
+int main()
+{
+    int ch;
+    NODE *root;
+    root = (NODE *)malloc(sizeof(NODE));
+    root = NULL;
+    do
+    {
+        printf("\nMenu: \n1.Insert\n2.Traversals\n3.Search by key\n4.Count nodes\n5.Height of the tree\n6.Max Node\n7.Search and delete node\n0.Exit\nEnter your choice: ");
+        scanf("%d", &ch);
+        switch (ch)
+        {
+        case 1:
+            root = insertNode(root);
+            break;
+        case 2:
+            printf("\nIn Order: \n");
+            inOrdered(root);
+            printf("\nPre Order: \n");
+            preOrdered(root);
+            printf("\nPost Order: \n");
+            postOrdered(root);
+            printf("\n");
+            break;
+        case 3:
+            searchByKey(root);
+            break;
+        case 4:
+            count = 0;
+            countNode(root);
+            printf("\nNumber of nodes: %d", count);
+            break;
+        case 5:
+            printf("Height of the tree : %d", height(root));
+            break;
+        case 6:
+            maxNode(root);
+            break;
+        case 7:
+            searchAndDelete(root);
+            break;
+        case 0:
+            printf("\nThank you!!!");
+            break;
+        default:
+            printf("\nInvalid choice!!!\n");
+        }
+    } while (ch != 0);
+
+    return 0;
+}
