@@ -1,0 +1,163 @@
+#include <stdio.h>
+#include <stdlib.h>
+int size;
+struct queue
+{
+    int front, rear, count;
+    int *q;
+} Q;
+
+void display()
+{
+    if (Q.count == 0)
+    {
+        printf("\nQueue is empty");
+        return;
+    }
+    int i = Q.front - 1;
+    printf("\nQueue elements: ");
+    do
+    {
+        i = (i + 1) % size;
+        printf("%d\t", Q.q[i]);
+    } while (i != Q.rear);
+}
+
+void pushRear()
+{
+    int ele;
+    printf("\nEnter the element to be inserted: ");
+    scanf("%d", &ele);
+    if (Q.rear + 1 == Q.front)
+    {
+        printf("\nReallocation failed!!!");
+        return;
+    }
+    if (Q.count == size)
+    {
+        printf("\nReallocationg memory\n");
+        size++;
+        Q.q = (int *)realloc(Q.q, size * sizeof(int));
+    }
+    if (Q.front == -1)
+    {
+        Q.front = Q.rear = 0;
+    }
+    else if (Q.rear == size - 1)
+    {
+        Q.rear = 0;
+    }
+    else
+        Q.rear++;
+    Q.q[Q.rear] = ele;
+    Q.count++;
+    display();
+}
+
+void pushFront()
+{
+    int ele;
+    printf("\nEnter the element to be inserted: ");
+    scanf("%d", &ele);
+    if (Q.rear == Q.front - 1)
+    {
+        printf("\nReallocation failed!!!");
+        return;
+    }
+    if (Q.count == size)
+    {
+        printf("\nReallocationg memory\n");
+        size++;
+        Q.q = (int *)realloc(Q.q, size * sizeof(int));
+    }
+    if (Q.front == -1)
+    {
+        Q.front = Q.rear = 0;
+    }
+    else if (Q.front == 0)
+    {
+        Q.front = size - 1;
+    }
+    else
+        Q.front--;
+    Q.q[Q.front] = ele;
+    Q.count++;
+    display();
+}
+
+void deleteFront()
+{
+    if (Q.count == 0)
+    {
+        printf("\nQueue is empty");
+        return;
+    }
+    printf("Deleted element: %d", Q.q[Q.front]);
+    if (Q.front == size - 1)
+    {
+        Q.front = 0;
+    }
+    else
+    {
+        Q.front++;
+
+    }
+    Q.count--;
+    display();
+}
+
+void deleteRear()
+{
+    if (Q.count == 0)
+    {
+        printf("\nQueue is empty");
+        return;
+    }
+    printf("Deleted element: %d", Q.q[Q.rear]);
+    if (Q.rear == 0)
+    {
+        Q.rear = size - 1;
+    }
+    else
+        Q.rear--;
+    Q.count--;
+    display();
+}
+int main()
+{
+    int ch;
+    Q.count = 0;
+    Q.front = Q.rear = -1;
+    printf("Enter the size: ");
+    scanf("%d", &size);
+    Q.q = (int *)malloc(size * sizeof(int));
+    do
+    {
+        printf("\nMENU:\n1.Insert rear\n2.Insert front\n3.Delete front\n4.Delete rear\n0.Exit\nEnter your choice: ");
+        scanf("%d", &ch);
+
+        switch (ch)
+        {
+        case 1:
+            pushRear();
+            break;
+        case 2:
+            pushFront();
+            break;
+        case 3:
+            deleteFront();
+            break;
+        case 4:
+            deleteRear();
+            break;
+
+        case 0:
+            printf("\nThank you!!");
+            break;
+
+        default:
+            printf("\nInvalid choice");
+        }
+    } while (ch != 0);
+    return 0;
+}
