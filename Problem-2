@@ -1,0 +1,97 @@
+/*Define a structure called Time containing 3 integer members (hour, minute, second). Develop a menu driven program to perform the following by writing separate function for each operation. a) To read time b) To display time c) To Update time d) Add two times by writing Add (T1, T2) which returns the new Time. Update function increments the time by one second and returns the new time (if the increment results in 60 seconds, then the second member is set to zero and minute member is incremented by one. If the result is 60 minutes, the minute member is set to zero and the hour member is incremented by one. Finally, when the hour becomes 24, Time should be reset to zero)*/
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct
+{
+    int sec, min, hr;
+} TIME;
+
+void readTime(TIME *time)
+{
+    printf("\nEnter time(hr:min:sec):");
+    scanf("%d %d %d", &time->hr, &time->min, &time->sec);
+}
+
+void displayTime(TIME *time)
+{
+    printf("\n%02d : %02d : %02d\n", time->hr, time->min, time->sec);
+}
+
+void updateTime(TIME *time)
+{
+    time->sec++;
+    if (time->sec == 60)
+    {
+        time->min++;
+        time->sec = 0;
+    }
+    if (time->min == 60)
+    {
+        time->min = 0;
+        time->hr++;
+    }
+    if (time->hr == 24)
+    {
+        time->hr = 0;
+    }
+    printf("\nTime after update: \n");
+    displayTime(time);
+}
+void addTime(TIME *time1, TIME *time2)
+{
+
+    TIME result;
+    result.hr = time1->hr + time2->hr;
+    result.min = time1->min + time2->min;
+    result.sec = time1->sec + time2->sec;
+    if (result.sec >= 60)
+    {
+        result.sec -= 60;
+        result.min++;
+    }
+    if (result.min >= 60)
+    {
+        result.min -= 60;
+        result.hr++;
+    }
+    if (result.hr >= 24)
+    {
+        result.hr = 0;
+    }
+    printf("\nResult: ");
+    displayTime(&result);
+}
+int main()
+{
+    int ch;
+    TIME time1, time2;
+    do
+    {
+        printf("\nMenu:\n1.Read time\n2.Display time\n3.Update time\n4.Add time\nEnter your choice: ");
+        scanf("%d", &ch);
+        switch (ch)
+        {
+        case 1:
+            readTime(&time1);
+            break;
+        case 2:
+            displayTime(&time1);
+            break;
+        case 3:
+            updateTime(&time1);
+            break;
+        case 4:
+            readTime(&time1);
+            readTime(&time2);
+            addTime(&time1, &time2);
+            break;
+        case 5:
+            printf("\nThank You!!!\n");
+            break;
+        default:
+            printf("Invalid choice!!!");
+        }
+    } while (ch != 5);
+
+    return 0;
+}
