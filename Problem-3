@@ -1,0 +1,219 @@
+//A menu driven program to implement various operations on array
+#include <stdio.h>
+#include <stdlib.h>
+int size, count;
+void read(int *p)
+{
+    for (int i = 0; i < size; i++)
+    {
+        printf("Enter element number %d: ", i + 1);
+        scanf("%d", &p[i]);
+    }
+}
+
+void display(int *p)
+{
+    printf("\nArray elements: ");
+    for (int i = 0; i < count; i++)
+    {
+        printf("%d\t", p[i]);
+    }
+}
+
+// Function number 1
+int *insertByPosition(int *p)
+{
+    int ele, pos, i;
+    printf("\nEnter position value: ");
+    scanf("%d", &pos);
+    if (pos < 1 || pos > count + 1)
+    {
+        printf("\nInvalid position!!\n");
+        return p;
+    }
+    printf("\nEnter the element to be inserted: ");
+    scanf("%d", &ele);
+    if (size == count)
+    {
+        printf("\nReallocating memory\n");
+        size++;
+        p = (int *)realloc(p, size * sizeof(int));
+    }
+    for (i = count; i > pos - 1; i--)
+    {
+        p[i] = p[i - 1];
+    }
+    p[i] = ele;
+    count++;
+    display(p);
+    return p;
+}
+
+// Function number 2
+void deleteByKey(int *p)
+{
+    int key, i, flag = 0, pos;
+    printf("\nEnter the key element to be deleted: ");
+    scanf("%d", &key);
+    for (i = 0; i < count; i++)
+    {
+        if (key == p[i])
+        {
+            flag = 1;
+            pos = i;
+            break;
+        }
+    }
+    if (flag = 0)
+    {
+        printf("\nKey not found");
+        return;
+    }
+    for (i = pos; i < count; i++)
+    {
+        p[i] = p[i + 1];
+    }
+    count--;
+    display(p);
+}
+
+// Function number 3
+void searchByPosition(int *p)
+{
+    int pos;
+    printf("\nEnter the position to be serahced: ");
+    scanf("%d", &pos);
+    if (pos < 1 || pos > count)
+    {
+        printf("\nInvalid position");
+        return;
+    }
+    printf("\nElement at position number %d is %d ", pos, p[pos - 1]);
+}
+
+// Function number 4
+void reverse(int *p)
+{
+    int temp;
+    for (int i = 0, j = count - 1; i < j; i++, j--)
+    {
+        temp = p[i];
+        p[i] = p[j];
+        p[j] = temp;
+    }
+    display(p);
+}
+
+// Function number 5
+int *insertByOrder(int *p)
+{
+    int i, pos, ele;
+    printf("\nEnter the element to be inserted: ");
+    scanf("%d", &ele);
+    if (count == size)
+    {
+        printf("\nReallocating memory");
+        size++;
+        p = (int *)realloc(p,size * sizeof(int));
+    }
+    for (i = 0; i < count; i++)
+    {
+        if (p[i] > ele)
+            break;
+    }
+    pos = i;
+    for (i = count; i > pos; i--)
+    {
+        p[i] = p[i - 1];
+    }
+    p[i] = ele;
+    count++;
+    display(p);
+    return p;
+}
+
+// Function number 6
+void deleteByPosition(int *p)
+{
+    int pos, i;
+    printf("Enter the position to be deleted: ");
+    scanf("%d", &pos);
+    if (pos < 1 || pos > count)
+    {
+        printf("\nInvalid position");
+        return;
+    }
+    for (i = pos - 1; i < count; i++)
+    {
+        p[i] = p[i + 1];
+    }
+    count--;
+    display(p);
+}
+
+// Function number 7
+void searchByKey(int *p)
+{
+    int key, i;
+    printf("\nEnter the key element to be searched: ");
+    scanf("%d", &key);
+    for (i = 0; i < count; i++)
+    {
+        if (key == p[i])
+        {
+            printf("\nKey %d is present at position number : %d", key, i + 1);
+            return;
+        }
+    }
+    printf("\nKey not found");
+}
+int main()
+{
+    int ch;
+    printf("Enter the size of the array: ");
+    scanf("%d", &size);
+    count = size;
+    int *p = (int *)malloc(size * sizeof(int));
+    read(p);
+    display(p);
+    do
+    {
+        printf("\nMenu:\n1.Insert by Order\n2.Insert by position\n3.Delete by position\n4.Delete by key\n5.Search by position\n6.Search by key\n7.Reverse array\n8.Display\n9.Exit\nEnter your choice: ");
+        scanf("%d",&ch); 
+        switch (ch)
+        {
+        case 1:
+            p = insertByOrder(p);
+            break;
+        case 2:
+            p = insertByPosition(p);
+            break;
+        case 3:
+            deleteByPosition(p);
+            break;
+        case 4:
+            deleteByKey(p);
+            break;
+        case 5:
+            searchByPosition(p);
+            break;
+        case 6:
+            searchByKey(p);
+            break;
+        case 7:
+            reverse(p);
+            break;
+        case 8:
+            display(p);
+            break;
+        case 9:
+            printf("\nThank you!!!\n");
+            break;
+
+        default:
+            printf("\nInvalid position\n");
+        }
+    } while (ch != 9);
+
+    return 0;
+}
