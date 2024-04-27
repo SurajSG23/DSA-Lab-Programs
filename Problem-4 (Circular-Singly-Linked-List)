@@ -1,0 +1,442 @@
+//Menu Driven program to implement various operation on circular singly linked list
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node
+{
+    int data;
+    struct node *link;
+} NODE;
+
+typedef struct
+{
+    int count;
+    NODE *head;
+} LIST;
+
+void display(LIST *list)
+{
+    if (list->head == NULL)
+    {
+        printf("\nNo nodes are present");
+        return;
+    }
+    NODE *temp = list->head;
+    printf("\nlinked list elements: \n");
+    do
+    {
+        printf("%d\t", temp->data);
+        temp = temp->link;
+    } while (temp != list->head);
+}
+
+NODE *getNode(int ele)
+{
+    NODE *n = (NODE *)malloc(sizeof(NODE));
+    n->data = ele;
+    n->link = NULL;
+    return n;
+}
+
+// Function number 1
+void insertByOrder(LIST *list)
+{
+    int ele;
+    printf("\nEnter the element to be inserted: ");
+    scanf("%d", &ele);
+    NODE *n = getNode(ele);
+    if (list->head == NULL)
+    {
+        list->head = n;
+        n->link = n;
+    }
+    else
+    {
+        NODE *temp = list->head;
+        NODE *prev = NULL;
+        do
+        {
+            if (temp->data > ele)
+                break;
+            prev = temp;
+            temp = temp->link;
+        } while (temp != list->head);
+        if (prev == NULL)
+        {
+            NODE *last = list->head;
+            do
+            {
+                last = last->link;
+            } while (last->link != list->head);
+            n->link = list->head;
+            list->head = n;
+            last->link = n;
+        }
+        else
+        {
+            prev->link = n;
+            n->link = temp;
+        }
+    }
+    list->count++;
+    display(list);
+}
+
+// Function number 2
+void deleteByPosition(LIST *list)
+{
+    int pos;
+    printf("\nEnter the position to be deleted: ");
+    scanf("%d", &pos);
+    if (pos < 1 || pos > list->count)
+    {
+        printf("\nInvalid position\n");
+        return;
+    }
+    if (list->head == NULL)
+    {
+        printf("\nNo nodes are present");
+        return;
+    }
+    NODE *prev = NULL;
+    NODE *temp = list->head;
+    for (int i = 0; i < pos - 1; i++)
+    {
+        prev = temp;
+        temp = temp->link;
+    }
+    if (prev == NULL)
+    {
+        if (list->count == 1)
+        {
+            list->head = NULL;
+            free(temp);
+        }
+        else
+        {
+            NODE *last=list->head;
+            do
+            {
+                last = last->link;
+            } while (last->link != list->head);
+            list->head = list->head->link;
+            last->link = list->head;
+            free(temp);
+        }
+    }
+    else
+    {
+        prev->link = temp->link;
+        free(temp);
+    }
+    list->count--;
+    display(list);
+}
+
+// Function number 3
+void searchByKey(LIST *list)
+{
+    int key;
+    printf("\nEnter the key element to be searched: ");
+    scanf("%d", &key);
+    if (list->head == NULL)
+    {
+        printf("\nNo nodes are present");
+        return;
+    }
+    NODE *temp = list->head;
+    for (int i = 0; i < list->count; i++)
+    {
+        if (temp->data == key)
+        {
+            printf("\nKey %d found at position : %d", key, i + 1);
+            return;
+        }
+        temp = temp->link;
+    }
+    printf("\nKey not foound!!!");
+}
+
+// Function number 4
+void deleteByKey(LIST *list)
+{
+    int key, flag = 0;
+    printf("\nEnter the key to be deleted: ");
+    scanf("%d", &key);
+    if (list->head == NULL)
+    {
+        printf("\nNo nodes are present");
+        return;
+    }
+    NODE *temp = list->head;
+    NODE *prev = NULL;
+    for (int i = 0; i < list->count; i++)
+    {
+        if (temp->data == key)
+        {
+            flag = 1;
+            break;
+        }
+        prev = temp;
+        temp = temp->link;
+    }
+    if (flag == 0)
+    {
+        printf("\nKey not found!!!");
+        return;
+    }
+    if (prev == NULL)
+    {
+        if (list->count == 1)
+        {
+            list->head = NULL;
+            free(temp);
+        }
+        else
+        {
+            NODE *last;
+            do
+            {
+                last = last->link;
+            } while (last->link != list->head);
+            list->head = temp->link;
+            last->link = list->head;
+            free(temp);
+        }
+    }
+    else
+    {
+        prev->link = temp->link;
+        free(temp);
+    }
+    list->count--;
+    display(list);
+}
+
+// Functioo number 5
+void deleteRear(LIST *list)
+{
+    if (list->head == NULL)
+    {
+        printf("\nNo nodes are present!!");
+        return;
+    }
+    NODE *last = list->head;
+    NODE *prev = NULL;
+    if (list->count == 1)
+    {
+        list->head = NULL;
+        free(last);
+    }
+    else
+    {
+        do
+        {
+            prev = last;
+            last = last->link;
+        } while (last->link != list->head);
+        prev->link = list->head;
+        free(last);
+    }
+    list->count--;
+    display(list);
+}
+
+// Function number 6
+void deleteFront(LIST *list)
+{
+    if (list->head == NULL)
+    {
+        printf("\nNo nodes are present!!");
+        return;
+    }
+    NODE *temp = list->head;
+    NODE *last = list->head;
+    if (list->count == 1)
+    {
+        list->head = NULL;
+        free(last);
+    }
+    else
+    {
+        do
+        {
+            last = last->link;
+        } while (last->link != list->head);
+        list->head = list->head->link;
+        last->link = list->head;
+        free(temp);
+    }
+    list->count--;
+    display(list);
+}
+
+// Function number 7
+void insertFront(LIST *list)
+{
+    int ele;
+    printf("\nEnter the element to be inserted: ");
+    scanf("%d", &ele);
+    NODE *n = getNode(ele);
+    if (list->head == NULL)
+    {
+        list->head = n;
+        n->link = n;
+    }
+    else
+    {
+        NODE *last = list->head;
+        do
+        {
+            last = last->link;
+
+        } while (last->link != list->head);
+        n->link = list->head;
+        list->head = n;
+        last->link = n;
+    }
+    list->count++;
+    display(list);
+}
+
+// Function number 8
+void inserRear(LIST *list)
+{
+    int ele;
+    printf("\nEnter the element to be inserted: ");
+    scanf("%d", &ele);
+    NODE *n = getNode(ele);
+    if (list->head == NULL)
+    {
+        list->head = n;
+        n->link = n;
+    }
+    else
+    {
+        NODE *last = list->head;
+        do
+        {
+            last = last->link;
+
+        } while (last->link != list->head);
+        last->link = n;
+        n->link = list->head;
+    }
+    list->count++;
+    display(list);
+}
+
+// Function number 9
+void searchByPosition(LIST *list)
+{
+    int pos;
+    printf("\nEnter the position value to be searched: ");
+    scanf("%d", &pos);
+    if (pos < 1 || pos > list->count)
+    {
+        printf("\nInvalid position!!!");
+        return;
+    }
+    NODE *temp = list->head;
+    for (int i = 0; i < pos - 1; i++)
+    {
+        temp = temp->link;
+    }
+    printf("\nElement at position %d is %d", pos, temp->data);
+}
+
+// Function number 10
+void insertByPosition(LIST *list)
+{
+    int pos, ele;
+    printf("\nEnter the position value to be searched: ");
+    scanf("%d", &pos);
+    if (pos < 1 || pos > list->count)
+    {
+        printf("\nInvalid position!!!");
+        return;
+    }
+    printf("\nEnter the element to be inserted: ");
+    scanf("%d", &ele);
+    NODE *n = getNode(ele);
+    NODE *temp = list->head;
+    NODE *prev = NULL;
+    for (int i = 0; i < pos - 1; i++)
+    {
+        prev = temp;
+        temp = temp->link;
+    }
+    if (prev == NULL)
+    {
+        NODE *last = list->head;
+        do
+        {
+            last = last->link;
+        } while (last->link != list->head);
+        n->link = list->head;
+        list->head = n;
+        last->link = n;
+    }
+    else
+    {
+        prev->link = n;
+        n->link = temp;
+    }
+    list->count++;
+    display(list);
+}
+int main()
+{
+    int ch;
+    LIST *list = (LIST *)malloc(sizeof(LIST));
+    list->count = 0;
+    list->head = NULL;
+    do
+    {
+        printf("\nMENU:\n1.Insert by order\n2.Insert front\n3.Insert rear\n4.Insert by position\n5.Delete by position\n6.Delete front\n7.Delete rear\n8.Delete by position\n9.Search by position\n10.Search by key\n11.Display\n0.Exit\nEnter your choice: ");
+        scanf("%d", &ch);
+        switch (ch)
+        {
+        case 1:
+            insertByOrder(list);
+            break;
+        case 2:
+            insertFront(list);
+            break;
+        case 3:
+            inserRear(list);
+            break;
+        case 4:
+            insertByPosition(list);
+            break;
+        case 5:
+            deleteByPosition(list);
+            break;
+        case 6:
+            deleteFront(list);
+            break;
+        case 7:
+            deleteRear(list);
+            break;
+        case 8:
+            deleteByPosition(list);
+            break;
+        case 9:
+            searchByPosition(list);
+            break;
+        case 10:
+            searchByKey(list);
+            break;
+        case 11:
+            display(list);
+            break;
+        case 0:
+            printf("\nThank you!!");
+            break;
+        default:
+            printf("\nInvalid position!!");
+        }
+    } while (ch != 0);
+
+    return 0;
+}
