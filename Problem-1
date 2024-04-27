@@ -1,0 +1,79 @@
+/*Define a structure called Student with the members: name, reg_no, marks in 3 tests and average_ marks. Develop a menu driven program to perform the following by writing separate function for each operation: a) read information of N students b) display student‟s information c) to calculate the average of best two test marks of each student. Note: Illustrate the use of pointer to an array of structure and allocate memory dynamically using malloc () /calloc()/realloc().*/
+#include <stdio.h>
+#include <stdlib.h>
+int n;
+typedef struct
+{
+    char name[20];
+    int reg_no;
+    int marks[3];
+    float avg_marks;
+} STU;
+
+void readInfo(STU *students)
+{
+    for (int i = 0; i < n; i++)
+    {
+        printf("\nEnter the name details of student %d \n", i + 1);
+        printf("Enter the name: ");
+        scanf("%s", students[i].name);
+        printf("Enter the register number: ");
+        scanf("%d", &students[i].reg_no);
+        printf("Enter the marks of three subjects: ");
+        scanf("%d%d%d", &students[i].marks[0], &students[i].marks[1], &students[i].marks[2]);
+    }
+}
+
+void displayInfo(STU *students)
+{
+    for (int i = 0; i < n; i++)
+    {
+        printf("\nDetails of student %d \n", i + 1);
+        printf("Name: %s\n", students[i].name);
+        printf("Register number: %d\n", students[i].reg_no);
+        printf("marks of three subjects:  %d\t %d\t %d\n", students[i].marks[0], students[i].marks[1], students[i].marks[2]);
+    }
+}
+
+void calcAvg(STU *students)
+{
+    for (int i = 0; i < n; i++)
+    {
+        int min = (students[i].marks[0] < students[i].marks[1]) ? ((students[i].marks[0] < students[i].marks[2]) ? students[i].marks[0] : students[i].marks[2]) : ((students[i].marks[1] < students[i].marks[2]) ? students[i].marks[1] : students[i].marks[2]);
+
+        students[i].avg_marks = (float)(students[i].marks[0] + students[i].marks[1] + students[i].marks[2] - min) / 2;
+        printf("\nAverage marks of best two subjects of %s :  %.2f\n", students[i].name, students[i].avg_marks);
+    }
+}
+int main()
+{
+    int ch;
+    printf("\nEnter the number of students: ");
+    scanf("%d", &n);
+    STU *students = (STU *)malloc(n * sizeof(STU));
+    do
+    {
+        printf("Menu:\n1.Read student info\n2.Display student info\n3.Calculate average marks\n4.Exit\nEnter your choice: ");
+        scanf("%d", &ch);
+        switch (ch)
+        {
+        case 1:
+            readInfo(students);
+            break;
+        case 2:
+            displayInfo(students);
+            break;
+        case 3:
+            calcAvg(students);
+            break;
+        case 4:
+            printf("Thank you\n");
+            break;
+        default:
+            printf("Invalid choice");
+   
+        }
+    } while (ch != 4);
+
+    return 0;
+}
